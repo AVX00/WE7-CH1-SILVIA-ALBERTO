@@ -7,4 +7,11 @@ const notFound = (req, res) => {
   res.status(404).json({ error: "not found " });
 };
 
-module.exports = { notFound };
+// eslint-disable-next-line no-unused-vars
+const generalError = (err, req, res, next) => {
+  const status = err.status ?? 500;
+  const message = err.message ?? "server error";
+  res.status(status).json({ error: message });
+};
+
+module.exports = { notFound, generalError };
