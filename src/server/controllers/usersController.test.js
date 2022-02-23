@@ -4,7 +4,7 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const User = require("../../database/models/User");
-const { userLogin } = require("./usersController");
+const { userLogin, userRegister } = require("./usersController");
 
 jest.mock("jsonwebtoken", () => ({
   ...jest.requireActual("jsonwebtoken"),
@@ -15,7 +15,6 @@ let server;
 beforeAll(async () => {
   server = await MongoMemoryServer.create();
   const uri = server.getUri();
-
   connectDB(uri);
 });
 
@@ -63,6 +62,26 @@ describe("Given a login user controller", () => {
       await userLogin(req, null, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a userRegister controller", () => {
+  describe("When it's called with req with a user inside it's body property and res", () => {
+    test("Then it should call methods status and json of next of res with 201 ", async () => {
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const expectedStatus = 201;
+      const res = { status: mockStatus, json: mockJson };
+      const next = null;
+      const req = {
+        body: { name: "joselito", username: "joselit0", password: "1234" },
+      };
+
+      await userRegister(req, res, next);
+
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+      expect(mockJson);
     });
   });
 });
