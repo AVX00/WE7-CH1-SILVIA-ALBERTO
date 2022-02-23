@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "@types/jest": "^27.4.1",
     "bson-objectid": "^2.0.2",
     "chalk": "^4.1.2",
@@ -16,6 +17,7 @@
     "express": "^4.17.3",
     "jest": "^27.5.1",
     "mongodb-memory-server": "^8.4.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.3",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15"
@@ -24,6 +26,13 @@
     "start": "node src",
     "dev-start": "nodemon src",
     "test": "jest --watchAll",
+
+    "test-coverage": "jest --watchAll --coverage"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
+
     "coverage": "jest --coverage --watchAll"
+
   }
 }
