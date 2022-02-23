@@ -7,3 +7,7 @@ const UserSchema = new Schema({
   admin: { type: Boolean },
   series: { type: Array, required: true },
 });
+
+const User = model("user", UserSchema, "users");
+
+module.exports = User;
