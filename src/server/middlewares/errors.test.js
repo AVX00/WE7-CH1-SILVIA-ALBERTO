@@ -35,4 +35,22 @@ describe("Given a general error handler", () => {
       expect(mockJson).toHaveBeenCalledWith(errorMessage);
     });
   });
+
+  describe("When it's called with err and res and err does not have err status and message", () => {
+    test("Then it should call res methods status and json with status 500 and {error: 'server error'}", () => {
+      const expectedJSON = { error: "server error" };
+      const expectedStatus = 500;
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const err = {};
+      const res = { status: mockStatus, json: mockJson };
+      const req = null;
+      const next = null;
+
+      generalError(err, req, res, next);
+
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+      expect(mockJson).toHaveBeenCalledWith(expectedJSON);
+    });
+  });
 });
