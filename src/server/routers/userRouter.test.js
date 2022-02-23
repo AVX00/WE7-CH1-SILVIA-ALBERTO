@@ -41,12 +41,43 @@ afterAll(async () => {
 describe("Given a /users/login endpoint", () => {
   describe("When it receives a POST and a valid user", () => {
     test("Then it should return a property token", async () => {
-      jest.setTimeout(9000);
       const user = { username: "Pepito", password: "1234" };
 
-      const { body } = await request(app).post("/users/login").send(user);
+      const { body } = await request(app)
+        .post("/users/login")
+        .send(user)
+        .expect(200);
 
       expect(body).toHaveProperty("token");
+    });
+  });
+  describe("When it receives a POST and a valid invalid user", () => {
+    test("Then it should return an error", async () => {
+      const user = { username: "Pepo", password: "1234" };
+
+      const expectedMessage = "Incorrect password or username";
+
+      const { body } = await request(app)
+        .post("/users/login")
+        .send(user)
+        .expect(401);
+
+      expect(body.error).toBe(expectedMessage);
+    });
+  });
+});
+
+describe("Given a /users/register endpoint", () => {
+  describe("When it receives a POST and a valid user", () => {
+    test("Then it should created a new user", async () => {
+      const user = { name: "Pepe", username: "Pepon", password: "1234" };
+
+      const { body } = await request(app)
+        .post("/users/register")
+        .send(user)
+        .expect(201);
+
+      expect(body.user.username).toBe(user.username);
     });
   });
 });

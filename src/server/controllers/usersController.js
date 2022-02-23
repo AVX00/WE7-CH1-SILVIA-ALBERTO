@@ -10,7 +10,7 @@ const userLogin = async (req, res, next) => {
 
   if (!user || !isRightPassword) {
     const error = new Error("Incorrect password or username");
-    error.code = 401;
+    error.status = 401;
     next(error);
     return;
   }
