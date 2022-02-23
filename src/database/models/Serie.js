@@ -1,8 +1,7 @@
 const { model, Schema } = require("mongoose");
 
 const SerieSchema = new Schema({
-  name: String,
-  required: true,
+  name: { type: String, required: true },
 });
 
 const Serie = model("Serie", SerieSchema, "series");
