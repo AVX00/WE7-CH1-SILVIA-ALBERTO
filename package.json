@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "chalk": "4",
+    "chalk": "^4.1.2",
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
     "eslint": "^8.2.0",
