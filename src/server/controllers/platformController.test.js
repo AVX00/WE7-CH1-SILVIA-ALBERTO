@@ -1,4 +1,3 @@
-const { default: ObjectID } = require("bson-objectid");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
