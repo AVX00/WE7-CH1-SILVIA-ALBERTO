@@ -4,12 +4,10 @@ const chalk = require("chalk");
 const upServer = require("./server/upServer");
 
 const port = process.env.PORT || 4000;
-const dbString = process.env.MONGO_STRING;
 
 (async () => {
   try {
-    await connectDataBase(dbString);
-    await upServer(port, app);
+    await upServer(port);
   } catch (error) {
     debug(chalk.red(`Error:`, error.message));
   }
