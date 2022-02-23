@@ -10,7 +10,7 @@ const userLogin = async (req, res, next) => {
 
   if (!user || !isRightPassword) {
     const error = new Error("Incorrect password or username");
-    error.code = 401;
+    error.status = 401;
     next(error);
     return;
   }
@@ -25,4 +25,18 @@ const userLogin = async (req, res, next) => {
   res.json({ token });
 };
 
-module.exports = userLogin;
+const userRegister = async (req, res, next) => {
+  try {
+    const password = await bcrypt.hash(req.body.password, 10);
+
+    req.body.password = password;
+    const user = await User.create(req.body);
+
+    res.status(201).json({ user });
+  } catch (error) {
+    error.code = 400;
+    next(error);
+  }
+};
+
+module.exports = { userLogin, userRegister };

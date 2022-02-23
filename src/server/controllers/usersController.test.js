@@ -4,7 +4,7 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const User = require("../../database/models/User");
-const userLogin = require("./usersController");
+const { userLogin, userRegister } = require("./usersController");
 
 jest.mock("jsonwebtoken", () => ({
   ...jest.requireActual("jsonwebtoken"),
@@ -63,6 +63,25 @@ describe("Given a login user controller", () => {
       await userLogin(req, null, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a register user controller", () => {
+  describe("When it's called with a request", () => {
+    test("Then if should be created in db", async () => {
+      const req = {
+        body: { name: "Pepe", username: "Pepe", password: "1234" },
+      };
+      const res = {
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+      User.create = jest.fn().mockResolvedValue(req.body);
+
+      await userRegister(req, res, next);
+
+      expect(User.create).toHaveBeenCalled();
     });
   });
 });
