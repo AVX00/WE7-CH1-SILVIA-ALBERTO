@@ -15,7 +15,6 @@ let server;
 beforeAll(async () => {
   server = await MongoMemoryServer.create();
   const uri = server.getUri();
-
   connectDB(uri);
 });
 
@@ -67,21 +66,65 @@ describe("Given a login user controller", () => {
   });
 });
 
-describe("Given a register user controller", () => {
-  describe("When it's called with a request", () => {
-    test("Then if should be created in db", async () => {
+describe("Given a userRegister controller", () => {
+  describe("When it's called with req with a user inside it's body property and res", () => {
+    test("Then it should call methods status and json of next of res with 201 ", async () => {
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const expectedStatus = 201;
+      const res = { status: mockStatus, json: mockJson };
+      const next = null;
       const req = {
-        body: { name: "Pepe", username: "Pepe", password: "1234" },
+        body: { name: "joselito", username: "joselit0", password: "1234" },
       };
-      const res = {
-        json: jest.fn(),
-      };
-      const next = jest.fn();
-      User.create = jest.fn().mockResolvedValue(req.body);
 
       await userRegister(req, res, next);
 
-      expect(User.create).toHaveBeenCalled();
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+      expect(mockJson);
+    });
+  });
+
+  describe("When it's called with req with a user with taken username", () => {
+    test("Then it should call methods status and json with 409 and {error: 'username taken'}", async () => {
+      const user = {
+        name: "Pepe",
+        username: "Pepe",
+        password: 1234,
+      };
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const expectedStatus = 409;
+      const res = { status: mockStatus, json: mockJson };
+      const req = { body: user };
+      const expectedResponse = { error: "username taken" };
+
+      await userRegister(req, res);
+
+      expect(mockJson).toHaveBeenCalledWith(expectedResponse);
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+    });
+  });
+
+  describe("When an error occurs", () => {
+    jest.mock("../../database/models/User", () => ({
+      User: () => {
+        throw new Error();
+      },
+    }));
+    test("Then the method next should be called", async () => {
+      const user = {
+        name: "joselito",
+        username: "joselit0",
+        password: 1234,
+      };
+      const res = null;
+      const req = { body: user };
+      const next = jest.fn();
+
+      await userRegister(req, res, next);
+
+      expect(next).toHaveBeenCalled();
     });
   });
 });

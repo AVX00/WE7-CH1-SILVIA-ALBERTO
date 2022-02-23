@@ -26,15 +26,19 @@ const userLogin = async (req, res, next) => {
 };
 
 const userRegister = async (req, res, next) => {
+  const user = req.body;
+
   try {
-    const password = await bcrypt.hash(req.body.password, 10);
-
-    req.body.password = password;
-    const user = await User.create(req.body);
-
-    res.status(201).json({ user });
+    const userNameTaken = await User.findOne({ username: user.username });
+    if (userNameTaken) {
+      res.status(409).json({ error: "username taken" });
+      return;
+    }
+    const password = await bcrypt.hash(user.password, 10);
+    const newUser = await User.create({ ...user, password });
+    res.status(201).json(newUser);
   } catch (error) {
-    error.code = 400;
+    error.message = "failed to create user";
     next(error);
   }
 };
