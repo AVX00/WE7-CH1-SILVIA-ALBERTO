@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   admin: { type: Boolean },
-  series: { type: Array },
+  series: [{ type: Schema.Types.ObjectId, ref: "user" }],
 });
 
 const User = model("user", UserSchema, "users");
