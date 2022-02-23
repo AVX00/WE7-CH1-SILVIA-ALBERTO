@@ -4,7 +4,7 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const User = require("../../database/models/User");
-const userLogin = require("./usersController");
+const { userLogin } = require("./usersController");
 
 jest.mock("jsonwebtoken", () => ({
   ...jest.requireActual("jsonwebtoken"),
@@ -53,7 +53,7 @@ describe("Given a login user controller", () => {
       expect(res.json).toHaveBeenCalledWith({ token });
     });
 
-    test.only("Then if the username or the password is wrong it should return an error", async () => {
+    test("Then if the username or the password is wrong it should return an error", async () => {
       const req = { body: { username: "Pepo", password: "1236" } };
 
       const next = jest.fn();
