@@ -5,7 +5,7 @@ const UserSchema = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   admin: { type: Boolean },
-  series: { type: Array, required: true },
+  series: { type: Array },
 });
 
 const User = model("user", UserSchema, "users");
