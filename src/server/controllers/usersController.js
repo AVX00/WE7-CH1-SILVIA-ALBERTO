@@ -25,4 +25,22 @@ const userLogin = async (req, res, next) => {
   res.json({ token });
 };
 
-module.exports = userLogin;
+const userRegister = async (req, res, next) => {
+  const user = req.body;
+
+  try {
+    const userNameTaken = await User.findOne({ username: user.username });
+    if (userNameTaken) {
+      res.status(409).json({ error: "username taken" });
+      return;
+    }
+    const password = await bcrypt.hash(user.password, 10);
+    const newUser = await User.create({ ...user, password });
+    res.status(201).json(newUser);
+  } catch (error) {
+    error.message = "failed to create user";
+    next(error);
+  }
+};
+
+module.exports = { userLogin, userRegister };
