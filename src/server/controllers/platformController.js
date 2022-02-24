@@ -13,4 +13,14 @@ const getPlatforms = async (req, res, next) => {
   }
 };
 
-module.exports = { getPlatforms };
+const createPlatform = async (req, res, next) => {
+  try {
+    const platform = await Platform.create(req.body);
+    res.status(201).json(platform);
+  } catch (error) {
+    error.status = 400;
+    next(error);
+  }
+};
+
+module.exports = { getPlatforms, createPlatform };
