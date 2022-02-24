@@ -27,7 +27,7 @@
   "scripts": {
     "start": "node src",
     "dev-start": "nodemon src",
-    "test": "jest --watchAll",
+    "test": "jest",
     "test-coverage": "jest --watchAll --coverage"
   },
   "devDependencies": {

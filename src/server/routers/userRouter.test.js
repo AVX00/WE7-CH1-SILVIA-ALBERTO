@@ -77,7 +77,7 @@ describe("Given a /users/register endpoint", () => {
         .send(user)
         .expect(201);
 
-      expect(body.user.username).toBe(user.username);
+      expect(body.username).toBe(user.username);
     });
   });
 });
