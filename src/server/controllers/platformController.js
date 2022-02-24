@@ -25,4 +25,23 @@ const createPlatform = async (req, res, next) => {
   }
 };
 
-module.exports = { getPlatforms, createPlatform };
+const updatePlatform = async (req, res, next) => {
+  try {
+    const {
+      url: {
+        params: { idPlatform },
+      },
+      body: platform,
+    } = req;
+    const modifiedPlatform = await Platform.findByIdAndUpdate(
+      idPlatform,
+      platform
+    );
+    res.status(201).json(modifiedPlatform);
+  } catch (error) {
+    error.message = "did't find any Platform with the provided id";
+    next(error);
+  }
+};
+
+module.exports = { getPlatforms, createPlatform, updatePlatform };
