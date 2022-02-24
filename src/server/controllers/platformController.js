@@ -35,7 +35,8 @@ const updatePlatform = async (req, res, next) => {
     } = req;
     const modifiedPlatform = await Platform.findByIdAndUpdate(
       idPlatform,
-      platform
+      platform,
+      { new: true }
     );
     res.status(201).json(modifiedPlatform);
   } catch (error) {

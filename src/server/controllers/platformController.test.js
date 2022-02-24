@@ -2,10 +2,14 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const Platform = require("../../database/models/Platform");
-const { getPlatforms, createPlatform } = require("./platformController");
+const {
+  getPlatforms,
+  createPlatform,
+  updatePlatform,
+} = require("./platformController");
 
 const netflx = {
-  name: "netxflx",
+  name: "netflix",
   series: [],
 };
 const disney = {
@@ -106,6 +110,52 @@ describe("Given a createNewPlatform", () => {
       await createPlatform(req, res, next);
 
       expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given an update platform controller", () => {
+  describe("When it's called with req with an id in params and a platform in body", () => {
+    test("Then the methods status and json of res should be called with 201 and the modified platform", async () => {
+      const platformToUpdate = { name: "Netflix", series: [] };
+      const { id } = await Platform.findOne({ name: "netflix" });
+      const req = {
+        url: { params: { idPlatform: id } },
+        body: platformToUpdate,
+      };
+      const expectedStatus = 201;
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const res = { status: mockStatus, json: mockJson };
+      const next = null;
+
+      await updatePlatform(req, res, next);
+
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+      expect(mockJson.mock.calls[0][0]).toHaveProperty(
+        "name",
+        platformToUpdate.name
+      );
+    });
+  });
+
+  describe("When it's called with req with an id that doesn't match any Platform in the db", () => {
+    test("Then the function next should be called with error with message 'did't find any Platform with the provided id'", async () => {
+      const req = {
+        url: { params: { idPlatform: "astosathsathasnoth" } },
+      };
+      const res = null;
+      const next = jest.fn();
+      const expectedErrorMessage =
+        "did't find any Platform with the provided id";
+
+      await updatePlatform(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(next.mock.calls[0][0]).toHaveProperty(
+        "message",
+        expectedErrorMessage
+      );
     });
   });
 });
