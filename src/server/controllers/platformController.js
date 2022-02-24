@@ -18,6 +18,8 @@ const createPlatform = async (req, res, next) => {
     const platform = await Platform.create(req.body);
     res.status(201).json(platform);
   } catch (error) {
+    error.message = "error creating a new Platform";
+    debug(chalk.bgRed.black("error creating a new Platform"));
     error.status = 400;
     next(error);
   }
