@@ -46,7 +46,7 @@ afterAll(async () => {
 
 describe("Given a platformsRouter", () => {
   describe("When it receives a get petition at /platforms/ from a not authorized user", () => {
-    test("Then it should respond with status 401 and ", async () => {
+    test("Then it should respond with status 401 and 'token missing' error message", async () => {
       const endpoint = "/platforms";
       const expectedStatus = 401;
       const expectedMessage = { error: "Token Missing" };
@@ -57,7 +57,7 @@ describe("Given a platformsRouter", () => {
     });
   });
 
-  describe("When it receives a get petition at /platforms/", () => {
+  describe("When it receives a get petition at /platforms/ with  a valid token", () => {
     test("Then it should respond with all platforms in the database and status 200", async () => {
       const endpoint = "/platforms";
       const expectedStatus = 200;
@@ -72,13 +72,36 @@ describe("Given a platformsRouter", () => {
       const next = null;
       await userLogin(req, res, next);
 
-      console.log(token);
       const { body } = await request(app)
         .get(endpoint)
         .set("Authorization", `Bearer ${token}`)
         .expect(expectedStatus);
 
       expect(body).toHaveLength(expectedNumberOfPlatforms);
+    });
+  });
+
+  describe("When it receives a get petition at /platforms/ with a not valid token", () => {
+    test("Then it should respond with status 401 and 'Wrong Token' error message", async () => {
+      const endpoint = "/platforms";
+      const expectedStatus = 401;
+      const expectedMessage = { error: "Wrong Token" };
+      const req = { body: { username: "joselit0", password: "1234" } };
+      let token;
+      const res = {
+        json: (loginToken) => {
+          token = loginToken.token;
+        },
+      };
+      const next = null;
+      await userLogin(req, res, next);
+
+      const { body } = await request(app)
+        .get(endpoint)
+        .set("Authorization", `Bearer ${token}asd`)
+        .expect(expectedStatus);
+
+      expect(body).toEqual(expectedMessage);
     });
   });
 });
