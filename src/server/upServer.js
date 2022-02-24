@@ -5,7 +5,7 @@ const chalk = require("chalk");
 const upServer = (port, app) =>
   new Promise((resolve, reject) => {
     const server = app.listen(port, () => {
-      debug(chalk.green(`Server listening on http://localhost:${port}/robots`));
+      debug(chalk.green(`Server listening on http://localhost:${port}/`));
       resolve();
     });
 

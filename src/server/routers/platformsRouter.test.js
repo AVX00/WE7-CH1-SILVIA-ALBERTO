@@ -34,6 +34,7 @@ beforeEach(async () => {
     password,
   });
 });
+
 afterEach(async () => {
   await Platform.deleteMany({});
   await User.deleteMany({});
@@ -102,6 +103,49 @@ describe("Given a platformsRouter", () => {
         .expect(expectedStatus);
 
       expect(body).toEqual(expectedMessage);
+    });
+  });
+  describe("When it receives a post petition at /platform/ without a token", () => {
+    test("Then it sould respond with a status 401 and 'Token Missing' error message", async () => {
+      const platform = { name: "HBO", series: [] };
+      const endpoint = "/platforms";
+      const expectedMessage = { error: "Token Missing" };
+      const expectedStatus = 401;
+
+      const { body } = await request(app)
+        .post(endpoint)
+        .send(platform)
+        .expect(expectedStatus);
+
+      expect(body).toEqual(expectedMessage);
+    });
+  });
+  describe("When it receives a post petition at /platform/ without a token", () => {
+    test("Then it sould respond with a status 201 and created a platform with name 'HBO'", async () => {
+      const endpoint = "/platforms";
+      const expectedStatus = 201;
+      const platform = { name: "HBO" };
+
+      const req = {
+        body: { name: "joselito", username: "joselit0", password: "1234" },
+      };
+
+      let token;
+      const res = {
+        json: (loginToken) => {
+          token = loginToken.token;
+        },
+      };
+      const next = null;
+
+      await userLogin(req, res, next);
+      const { body } = await request(app)
+        .post(endpoint)
+        .send(platform)
+        .set("Authorization", `Bearer ${token}`)
+        .expect(expectedStatus);
+
+      expect(body).toHaveProperty("name");
     });
   });
 });
