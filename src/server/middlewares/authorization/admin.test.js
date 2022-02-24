@@ -79,10 +79,7 @@ describe("Given a admin authorization middleware", () => {
       await admin(req, res, next);
 
       expect(next).toHaveBeenCalled();
-      expect(next.mock.calls[0][0]).toHaveProperty(
-        "message",
-        "no user with provided id"
-      );
+      expect(next.mock.calls[0][0]).toHaveProperty("message", errorMessage);
     });
   });
 });
