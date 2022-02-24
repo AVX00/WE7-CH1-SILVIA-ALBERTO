@@ -2,7 +2,7 @@ const { MongoMemoryServer } = require("mongodb-memory-server");
 const { default: mongoose } = require("mongoose");
 const connectDB = require("../../database");
 const Platform = require("../../database/models/Platform");
-const { getPlatforms } = require("./platformController");
+const { getPlatforms, createPlatform } = require("./platformController");
 
 const netflx = {
   name: "netxflx",
@@ -63,6 +63,47 @@ describe("Given a getPlatforms controller", () => {
       const next = jest.fn();
 
       await getPlatforms(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+  });
+});
+
+describe("Given a createNewPlatform", () => {
+  describe("When it's called with a request", () => {
+    test("Then it should call method res.json with code 201", async () => {
+      const mockStatus = jest.fn().mockReturnThis();
+      const mockJson = jest.fn();
+      const expectedStatus = 201;
+      const res = { status: mockStatus, json: mockJson };
+      const next = null;
+
+      const req = {
+        body: { name: "HBO" },
+      };
+
+      await createPlatform(req, res, next);
+
+      expect(mockStatus).toHaveBeenCalledWith(expectedStatus);
+      expect(mockJson);
+    });
+  });
+  describe("When it's called and throw an error", () => {
+    jest.mock("../../database/models/User", () => ({
+      User: () => {
+        throw new Error();
+      },
+    }));
+    test("Then it should call method next with error message", async () => {
+      const platform = {
+        name: "HBO",
+        series: ["1", "2"],
+      };
+      const res = null;
+      const req = { body: platform };
+      const next = jest.fn();
+
+      await createPlatform(req, res, next);
 
       expect(next).toHaveBeenCalled();
     });
